@@ -1,0 +1,32 @@
+{
+  "name": "global-market-crawler",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "crawl": "tsx src/main.ts",
+    "crawl:dry": "tsx src/main.ts --dry-run",
+    "crawl:stocks": "tsx src/scripts/crawl-stocks.ts",
+    "crawl:stocks:dry": "tsx src/scripts/crawl-stocks.ts --dry-run",
+    "crawl:stocks:detail": "tsx src/scripts/crawl-stock-details.ts",
+    "crawl:crypto": "tsx src/scripts/crawl-crypto.ts",
+    "crawl:crypto:dry": "tsx src/scripts/crawl-crypto.ts --dry-run",
+    "crawl:crypto:detail": "tsx src/scripts/crawl-crypto-details.ts",
+    "crawl:commodities": "tsx src/scripts/crawl-commodities.ts",
+    "crawl:commodities:dry": "tsx src/scripts/crawl-commodities.ts --dry-run",
+    "crawl:vietnam-gold": "tsx src/scripts/crawl-vietnam-gold.ts",
+    "crawl:vietnam-gold:dry": "tsx src/scripts/crawl-vietnam-gold.ts --dry-run",
+    "typecheck": "tsc --noEmit",
+    "build:currencies": "python3 scripts/build-currencies-json.py"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "mongodb": "^6.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.7.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  },
+  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee"
+}
