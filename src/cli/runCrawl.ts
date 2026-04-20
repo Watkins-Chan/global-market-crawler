@@ -29,11 +29,12 @@ function parseMarketArg(args: string[]): MarketType[] | null {
     return ["stock", "crypto", "commodity", "vietnam_gold"];
   }
 
-  const markets = value
+  const normalized = value
     .split(",")
     .map((v) => v.trim())
     .filter(Boolean)
-    .filter((v): v is MarketType => ["stock", "crypto", "commodity", "vietnam_gold"].includes(v));
+    .map((v) => (v === "vietnam_precious" ? "vietnam_gold" : v));
+  const markets = normalized.filter((v): v is MarketType => ["stock", "crypto", "commodity", "vietnam_gold"].includes(v));
   return markets.length > 0 ? markets : null;
 }
 

@@ -5,9 +5,20 @@ interface VangTodaySingleResponse {
   success: boolean;
   timestamp: number;
   type: string;
+  name?: string;
   buy: number;
   sell: number;
+  change_buy?: number;
   change_sell?: number;
+}
+
+interface VangTodayCurrentListResponse {
+  success: boolean;
+  current_time: number;
+  data: Array<{
+    type_code: string;
+    name: string;
+  }>;
 }
 
 interface VangTodayHistoryResponse {
@@ -20,8 +31,11 @@ interface VangTodayHistoryResponse {
 
 export interface VangTodayPrice {
   typeCode: string;
+  name: string | null;
   buy: number;
   sell: number;
+  changeBuyAbs: number | null;
+  changeSellAbs: number | null;
   spread: number;
   change24h: number;
   updatedAt: Date;
@@ -39,15 +53,19 @@ const VANG_TODAY_HEADERS = {
 };
 
 export async function discoverVangTodayBrands(limit = 20): Promise<VangTodayBrand[]> {
-  const response = await fetch("https://www.vang.today/", { headers: VANG_TODAY_HEADERS });
+  const url = new URL("https://www.vang.today/api/prices");
+  url.searchParams.set("action", "current");
+  const response = await fetch(url, { headers: VANG_TODAY_HEADERS });
   if (!response.ok) throw new Error(`vang.today discovery failed: ${response.status}`);
-  const html = await response.text();
+  const payload = (await response.json()) as VangTodayCurrentListResponse;
+  if (!payload.success || !Array.isArray(payload.data)) {
+    throw new Error("vang.today discovery payload malformed");
+  }
 
-  const matches = html.matchAll(/data-code="([A-Z0-9]+)"[\s\S]*?<div class="list-name gold-name">([^<]+)<\/div>/g);
   const byCode = new Map<string, VangTodayBrand>();
-  for (const match of matches) {
-    const code = (match[1] ?? "").trim();
-    const name = (match[2] ?? "").replace(/\s+/g, " ").trim();
+  for (const item of payload.data) {
+    const code = String(item.type_code ?? "").trim();
+    const name = String(item.name ?? "").replace(/\s+/g, " ").trim();
     if (!code || code === "XAUUSD") continue;
     if (!byCode.has(code)) byCode.set(code, { code, name: name || code });
   }
@@ -66,8 +84,11 @@ export async function fetchVangTodayPrice(typeCode: string): Promise<VangTodayPr
   const previousSell = payload.change_sell != null ? payload.sell - payload.change_sell : payload.sell;
   return {
     typeCode: payload.type,
+    name: payload.name ?? null,
     buy: payload.buy,
     sell: payload.sell,
+    changeBuyAbs: payload.change_buy ?? null,
+    changeSellAbs: payload.change_sell ?? null,
     spread: payload.sell - payload.buy,
     change24h: computeChangePercent(payload.sell, previousSell),
     updatedAt: new Date(payload.timestamp * 1000),

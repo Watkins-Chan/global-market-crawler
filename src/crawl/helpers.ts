@@ -84,6 +84,9 @@ export interface CommoditySeed {
 export interface VietnamGoldSeed {
   code: string;
   name: string;
+  unit?: "VND/luong" | "VND/kg";
+  metalType?: "gold" | "silver";
+  source?: string;
 }
 
 export function emptyPayload(): IngestionPayload {
@@ -277,7 +280,9 @@ export function buildVietnamGoldBrandDoc(seed: VietnamGoldSeed): VietnamGoldBran
     brand_code: seed.code,
     name: seed.name,
     slug: buildSlug(seed.code),
-    unit: "VND/luong",
+    unit: seed.unit ?? "VND/luong",
+    metal_type: seed.metalType ?? "gold",
+    source: seed.source ?? "vang.today",
     source_ids: { vietnamGoldCode: seed.code },
     is_active: true,
     created_at: now,

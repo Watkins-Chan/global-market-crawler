@@ -233,7 +233,9 @@ export interface VietnamGoldBrandDocument {
   name: string;
   slug: string;
   logo?: string;
-  unit: "VND/luong";
+  unit: "VND/luong" | "VND/kg";
+  metal_type: "gold" | "silver";
+  source: string;
   description?: string;
   source_ids: SourceIds;
   is_active: boolean;
@@ -243,28 +245,46 @@ export interface VietnamGoldBrandDocument {
 
 export interface VietnamGoldSnapshotDocument {
   brand_id: string;
+  metal_type: "gold" | "silver";
+  source: string;
+  /** Display-friendly timestamp from source, e.g. `09:00 20/04`. */
+  detail_last_update_text?: string | null;
   buy_price: number;
   sell_price: number;
+  /** Display value in K VND, e.g. 168300. */
+  detail_price_buy_k?: number | null;
+  /** Display value in K VND, e.g. 171300. */
+  detail_price_sell_k?: number | null;
+  /** Absolute VND change vs previous update from source (detail page "↓ -700.000"). */
+  today_change_buy?: number | null;
+  today_change_sell?: number | null;
   spread: number;
   change_1d: number;
   change_1w: number;
   change_1m: number;
   change_ytd: number;
-  global_gold_price_usd_oz: number;
-  converted_vnd_per_luong: number;
-  premium_vs_global: number;
+  /** 30-day statistics mirrored from detail view (computed from source history). */
+  stat_30d_points?: number | null;
+  stat_30d_sell_high?: number | null;
+  stat_30d_sell_low?: number | null;
+  stat_30d_sell_avg?: number | null;
+  global_gold_price_usd_oz?: number | null;
+  converted_vnd_per_luong?: number | null;
+  premium_vs_global?: number | null;
   sparkline_7d: number[];
   updated_at: Date;
 }
 
 export interface VietnamGoldPriceHistoryDocument {
   brand_id: string;
+  metal_type: "gold" | "silver";
+  source: string;
   interval: PriceInterval;
   timestamp: Date;
   buy_price: number;
   sell_price: number;
   spread: number;
-  premium_vs_global: number;
+  premium_vs_global?: number | null;
 }
 
 export interface IngestionJobDocument {
