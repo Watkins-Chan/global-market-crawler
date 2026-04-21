@@ -9,6 +9,7 @@ import {
   startIngestionJob,
   withMongo,
 } from "../db/mongo.js";
+import { parseCommodityDiscoveryLimitFromEnv } from "../crawl/commodityDiscoveryLimit.js";
 import { parseCryptoDiscoveryLimitFromEnv } from "../crawl/cryptoDiscoveryLimit.js";
 import { parseStockDiscoveryLimitFromEnv } from "../crawl/stockDiscoveryLimit.js";
 import { stockPersistFlushSize } from "../crawl/stocks.js";
@@ -72,11 +73,12 @@ export async function runCrawlCli(options: RunCrawlCliOptions): Promise<void> {
   const issues: CrawlIssue[] = [];
 
   const cryptoDiscoveryLimit = parseCryptoDiscoveryLimitFromEnv();
+  const commodityDiscoveryLimit = parseCommodityDiscoveryLimitFromEnv();
   const pipelineOpts = {
     markets: selectedMarkets,
     stockLimit: parseStockDiscoveryLimitFromEnv(),
     cryptoLimit: cryptoDiscoveryLimit,
-    commodityLimit: Number(process.env.COMMODITY_DISCOVERY_LIMIT ?? "5"),
+    commodityLimit: commodityDiscoveryLimit,
     vietnamGoldLimit: Number(process.env.VIETNAM_GOLD_DISCOVERY_LIMIT ?? "10"),
   };
 
@@ -88,6 +90,16 @@ export async function runCrawlCli(options: RunCrawlCliOptions): Promise<void> {
         : `giới hạn ${cryptoDiscoveryLimit} dòng (theo env)`;
     console.log(
       `[crawl] crypto: ${capMsg}. Để lấy full list: xóa hoặc để trống CRYPTO_DISCOVERY_LIMIT, hoặc ghi \`all\` / \`0\`. Giá trị hiện tại: ${raw === undefined || raw === "" ? "(trống)" : JSON.stringify(raw)}`,
+    );
+  }
+  if (selectedMarkets.includes("commodity")) {
+    const raw = process.env.COMMODITY_DISCOVERY_LIMIT?.trim();
+    const capMsg =
+      commodityDiscoveryLimit === undefined
+        ? "không giới hạn (crawl hết list commodities trên TradingEconomics)"
+        : `giới hạn ${commodityDiscoveryLimit} dòng (theo env)`;
+    console.log(
+      `[crawl] commodity: ${capMsg}. Để lấy full list: xóa hoặc để trống COMMODITY_DISCOVERY_LIMIT, hoặc ghi \`all\` / \`0\`. Giá trị hiện tại: ${raw === undefined || raw === "" ? "(trống)" : JSON.stringify(raw)}`,
     );
   }
 

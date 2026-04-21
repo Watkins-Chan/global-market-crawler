@@ -12,6 +12,7 @@ export interface SourceIds {
   coingeckoId?: string;
   vietnamGoldCode?: string;
   tradingviewTicker?: string;
+  tradingEconomicsCommoditySlug?: string;
   /** Path segment for `tradingview.com/symbols/{slug}/` e.g. `NASDAQ-NVDA` */
   tradingviewSymbolSlug?: string;
 }
@@ -188,6 +189,7 @@ export interface CommodityDocument {
   symbol: string;
   name: string;
   slug: string;
+  group?: string;
   category?: string;
   benchmark?: string;
   unit?: string;

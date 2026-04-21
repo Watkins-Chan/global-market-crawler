@@ -11,7 +11,8 @@ export interface RunPipelineOptions {
   stockLimit: number | undefined;
   /** `undefined` = no cap (full coin list until TradingView returns no more rows) */
   cryptoLimit: number | undefined;
-  commodityLimit: number;
+  /** `undefined` = no cap (full commodity list on TradingEconomics). */
+  commodityLimit: number | undefined;
   vietnamGoldLimit: number;
   /** When crawling stocks to MongoDB, flush list rows every N items (see `STOCK_PERSIST_BATCH_SIZE`) */
   stockListPersist?: StockListPersistContext;

@@ -79,6 +79,11 @@ export interface CryptoSeed {
 export interface CommoditySeed {
   symbol: string;
   name: string;
+  group?: string;
+  benchmark?: string;
+  unit?: string;
+  description?: string;
+  tradingEconomicsCommoditySlug?: string;
 }
 
 export interface VietnamGoldSeed {
@@ -264,9 +269,14 @@ export function buildCommodityDoc(seed: CommoditySeed): CommodityDocument {
     symbol: seed.symbol,
     name: seed.name,
     slug: buildSlug(seed.symbol),
+    group: seed.group,
     category: "Commodity",
-    benchmark: "Yahoo market summary discovery",
-    source_ids: { yahooSymbol: seed.symbol },
+    benchmark: seed.benchmark ?? "TradingEconomics commodity discovery",
+    unit: seed.unit,
+    description: seed.description,
+    source_ids: seed.tradingEconomicsCommoditySlug
+      ? { tradingEconomicsCommoditySlug: seed.tradingEconomicsCommoditySlug }
+      : { yahooSymbol: seed.symbol },
     is_active: true,
     created_at: now,
     updated_at: now,
