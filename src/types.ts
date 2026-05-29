@@ -139,10 +139,14 @@ export interface CryptoDocument {
   /** "Category" label from symbol-page About section (detail crawl) */
   profile_category?: string;
   website_url?: string;
+  website_urls?: string[];
   source_code_url?: string;
+  source_code_urls?: string[];
   whitepaper_url?: string;
+  whitepaper_urls?: string[];
   explorer_urls?: string[];
   community_url?: string;
+  community_urls?: string[];
   /** Set when TradingView crypto symbol-page crawl has updated this document */
   detail_enriched_at?: Date;
   source_ids: SourceIds;

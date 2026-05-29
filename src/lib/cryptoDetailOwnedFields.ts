@@ -6,10 +6,14 @@ export const CRYPTO_DETAIL_OWNED_FIELD_KEYS = new Set<string>([
   "description",
   "profile_category",
   "website_url",
+  "website_urls",
   "source_code_url",
+  "source_code_urls",
   "whitepaper_url",
+  "whitepaper_urls",
   "explorer_urls",
   "community_url",
+  "community_urls",
   "detail_enriched_at",
 ]);
 

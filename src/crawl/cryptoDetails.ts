@@ -15,11 +15,23 @@ function enrichmentToCryptoFields(
   const out: Partial<CryptoDocument> = {};
   if (en.profileDescription?.trim()) out.description = decodeTvHtmlEntities(en.profileDescription.trim());
   if (en.profileCategory?.trim()) out.profile_category = en.profileCategory.trim();
-  if (en.websiteUrl?.trim()) out.website_url = en.websiteUrl.trim();
-  if (en.sourceCodeUrl?.trim()) out.source_code_url = en.sourceCodeUrl.trim();
-  if (en.whitepaperUrl?.trim()) out.whitepaper_url = en.whitepaperUrl.trim();
+  if (en.websiteUrls?.length) {
+    out.website_urls = [...en.websiteUrls];
+    out.website_url = en.websiteUrls[0];
+  }
+  if (en.sourceCodeUrls?.length) {
+    out.source_code_urls = [...en.sourceCodeUrls];
+    out.source_code_url = en.sourceCodeUrls[0];
+  }
+  if (en.whitepaperUrls?.length) {
+    out.whitepaper_urls = [...en.whitepaperUrls];
+    out.whitepaper_url = en.whitepaperUrls[0];
+  }
   if (en.explorerUrls?.length) out.explorer_urls = [...en.explorerUrls];
-  if (en.communityUrl?.trim()) out.community_url = en.communityUrl.trim();
+  if (en.communityUrls?.length) {
+    out.community_urls = [...en.communityUrls];
+    out.community_url = en.communityUrls[0];
+  }
   return out;
 }
 

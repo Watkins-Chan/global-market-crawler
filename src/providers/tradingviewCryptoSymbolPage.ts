@@ -8,11 +8,11 @@ import { extractSchemaOrgCorporationDescription } from "./tradingviewSymbolPage.
 export type TradingViewCryptoSymbolPageEnrichment = {
   profileDescription?: string;
   profileCategory?: string;
-  websiteUrl?: string;
-  sourceCodeUrl?: string;
-  whitepaperUrl?: string;
+  websiteUrls?: string[];
+  sourceCodeUrls?: string[];
+  whitepaperUrls?: string[];
   explorerUrls?: string[];
-  communityUrl?: string;
+  communityUrls?: string[];
 };
 
 const TV_UA =
@@ -49,9 +49,17 @@ function parseCryptoAboutSection(html: string): Partial<TradingViewCryptoSymbolP
   const out: Partial<TradingViewCryptoSymbolPageEnrichment> = {};
   const explorers: string[] = [];
 
-  function firstExternalHttps(slice: string): string | undefined {
-    const matches = [...slice.matchAll(/href="(https:[^"]+)"/g)].map((m) => m[1]);
-    return matches.find((u) => !u.includes("tradingview.com"));
+  function allExternalHttps(slice: string): string[] {
+    const urls = [...slice.matchAll(/href="(https:[^"]+)"/g)]
+      .map((m) => m[1])
+      .filter((u) => !u.includes("tradingview.com"));
+    return [...new Set(urls)];
+  }
+
+  function pushUnique(target: string[], urls: string[]) {
+    for (const u of urls) {
+      if (!target.includes(u)) target.push(u);
+    }
   }
 
   for (const label of labels) {
@@ -59,25 +67,20 @@ function parseCryptoAboutSection(html: string): Partial<TradingViewCryptoSymbolP
     if (idx === -1) continue;
     const slice = chunk.slice(idx, idx + 2500);
     const textVal = slice.match(/value-ststB_hQ">([^<]+)</)?.[1]?.trim();
-    const href = firstExternalHttps(slice);
+    const hrefs = allExternalHttps(slice);
 
     if (label === "Category") {
       if (textVal) out.profileCategory = textVal;
     } else if (label === "Explorers") {
-      const urls = [...slice.matchAll(/href="(https:[^"]+)"/g)]
-        .map((m) => m[1])
-        .filter((u) => !u.includes("tradingview.com"));
-      for (const u of urls) {
-        if (!explorers.includes(u)) explorers.push(u);
-      }
-    } else if (label === "Website" && href) {
-      out.websiteUrl = href;
-    } else if (label === "Source code" && href) {
-      out.sourceCodeUrl = href;
-    } else if (label === "Whitepaper" && href) {
-      out.whitepaperUrl = href;
-    } else if (label === "Community" && href) {
-      out.communityUrl = href;
+      pushUnique(explorers, hrefs);
+    } else if (label === "Website" && hrefs.length > 0) {
+      out.websiteUrls = hrefs;
+    } else if (label === "Source code" && hrefs.length > 0) {
+      out.sourceCodeUrls = hrefs;
+    } else if (label === "Whitepaper" && hrefs.length > 0) {
+      out.whitepaperUrls = hrefs;
+    } else if (label === "Community" && hrefs.length > 0) {
+      out.communityUrls = hrefs;
     }
   }
 
