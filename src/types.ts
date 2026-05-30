@@ -193,6 +193,7 @@ export interface CommodityDocument {
   symbol: string;
   name: string;
   slug: string;
+  logo?: string;
   group?: string;
   category?: string;
   benchmark?: string;
