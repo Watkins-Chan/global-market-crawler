@@ -16,12 +16,15 @@
     "crawl:commodities:dry": "tsx src/scripts/crawl-commodities.ts --dry-run",
     "crawl:vietnam-gold": "tsx src/scripts/crawl-vietnam-gold.ts",
     "crawl:vietnam-gold:dry": "tsx src/scripts/crawl-vietnam-gold.ts --dry-run",
+    "cron": "tsx src/scheduler.ts",
+    "cron:now": "tsx src/scheduler.ts --run-now",
     "typecheck": "tsc --noEmit",
     "build:currencies": "python3 scripts/build-currencies-json.py"
   },
   "dependencies": {
     "dotenv": "^16.6.1",
-    "mongodb": "^6.20.0"
+    "mongodb": "^6.20.0",
+    "node-cron": "^4.2.1"
   },
   "devDependencies": {
     "@types/node": "^24.7.2",
